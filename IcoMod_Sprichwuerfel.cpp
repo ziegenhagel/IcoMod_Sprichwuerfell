@@ -19,9 +19,12 @@ IcoMod_Sprichwuerfel::IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int co
   _colors = colors;
 
   _refreshTime = config["refreshTime"];
-  _fontSize = config["fontSize"];
   _progressBar = config["progressBar"];
+  Serial.println("progressBar Style:");
+  Serial.println(_progressBar);
+
   _currentIndex = 0;
+  _fontSize = config["fontSize"];
 }
 
 void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex, unsigned int fontSize)
@@ -48,12 +51,12 @@ void IcoMod_Sprichwuerfel::onClick()
   Serial.print("Click at ");
   Serial.print(millis()); 
 
-  _lastRefresh = millis() - 1;
+  _nextRefresh = millis() - 1;
 }
 
 void IcoMod_Sprichwuerfel::initialize()
 {
-  _lastRefresh = millis() - 1;
+  _nextRefresh = millis() - 1;
   _lastFetch = millis() - 1;
 }
 
@@ -86,10 +89,10 @@ void IcoMod_Sprichwuerfel::refresh()
     JsonArray data = _jsonBuffer.as<JsonArray>();
   }
 
-  if (millis() >= _lastRefresh)
+  if (millis() >= _nextRefresh)
   {
 
-    _lastRefresh = millis() + _refreshTime;
+    _nextRefresh = millis() + _refreshTime;
 
     JsonArray data = _jsonBuffer.as<JsonArray>();
 
@@ -102,17 +105,16 @@ void IcoMod_Sprichwuerfel::refresh()
   }
 
   // progress button on bottom 
-  int progress = (_lastRefresh - millis()) / _refreshTime ;
 
-  Serial.print("Progress: ");
-  Serial.println(progress);
-  Serial.print("%");
+  double progress = ( _nextRefresh - millis() ) / (double)_refreshTime ;
+  int progressWidth = (int) (_tft->width() - (progress * _tft->width()));
 
-  int progressWidth = progress / _tft->width();
+  int progressHeight = 2;
 
-  // progressWidth = 40;
-
-  // _tft->fillRect(0, 0, progressWidth, 5, _colors[2]);
-  _tft->fillRect(0, _tft->height() - 5, progressWidth, 5, _colors[2]);
+  if(String(_progressBar) == "top") {
+      _tft->fillRect(0, 0, progressWidth, progressHeight, _colors[2]);
+  } else if (String(_progressBar) == "bottom") {
+      _tft->fillRect(0, _tft->height() - progressHeight, progressWidth, progressHeight, _colors[2]);
+  }
 
 }

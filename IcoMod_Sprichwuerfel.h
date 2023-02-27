@@ -19,11 +19,11 @@ class IcoMod_Sprichwuerfel : public IcoMod
   private:
     int _currentIndex;
     StaticJsonDocument<24576> _jsonBuffer;
-    unsigned long _lastRefresh;
+    unsigned long _nextRefresh;
     unsigned long _lastFetch;
     unsigned long _fontSize;
     unsigned long _refreshTime;
-    String _progressBar;
+    const char *_progressBar;
 };
 
 #endif
