@@ -27,11 +27,17 @@ IcoMod_Sprichwuerfel::IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int co
   _fontSize = config["fontSize"];
 }
 
-void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex, unsigned int fontSize)
+void IcoMod_Sprichwuerfel::draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex, unsigned int fontSize)
 {
 
   // zeige aktuelle posts
   tft->fillScreen(colors[0]);
+
+  if(String(_progressBar) == "top") {
+      _tft->fillRect(0, 0, _tft->width(), progressHeight, colors[2]);
+  } else if (String(_progressBar) == "bottom") {
+      _tft->fillRect(0, _tft->height() - progressHeight, _tft->width(), progressHeight, colors[2]);
+  }
 
   // Print random funny text, data is an array of strings
   String currentFunny = data[currentIndex];
@@ -114,14 +120,14 @@ void IcoMod_Sprichwuerfel::refresh()
   // progress button on bottom 
 
   double progress = ( _nextRefresh - millis() ) / (double)_refreshTime ;
-  int progressWidth = (int) (_tft->width() - (progress * _tft->width()));
+  int progressWidth = ( _tft->width() - (progress * _tft->width()));
 
-  int progressHeight = 2;
+  int startX = 0;
 
   if(String(_progressBar) == "top") {
-      _tft->fillRect(0, 0, progressWidth, progressHeight, _colors[2]);
+      _tft->fillRect(startX, 0, progressWidth, progressHeight, _colors[0]);
   } else if (String(_progressBar) == "bottom") {
-      _tft->fillRect(0, _tft->height() - progressHeight, progressWidth, progressHeight, _colors[2]);
+      _tft->fillRect(startX, _tft->height() - progressHeight, progressWidth, progressHeight, _colors[0]);
   }
 
 }

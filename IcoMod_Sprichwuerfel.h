@@ -17,6 +17,7 @@ class IcoMod_Sprichwuerfel : public IcoMod
     void initialize();
     void refresh();
     void next();
+    void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex, unsigned int fontSize);
   private:
     int _currentIndex;
     StaticJsonDocument<24576> _jsonBuffer;
@@ -25,6 +26,7 @@ class IcoMod_Sprichwuerfel : public IcoMod
     unsigned long _fontSize;
     unsigned long _refreshTime;
     const char *_progressBar;
+    int progressHeight = 2;
 };
 
 #endif
