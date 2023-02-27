@@ -16,7 +16,7 @@
         {
             "name": "fontSize",
             "type": "enum",
-            "values": ["1","2"],
+            "options": ["1","2"],
             "default": "1"
         }
     ]

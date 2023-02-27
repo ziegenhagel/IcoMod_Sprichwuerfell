@@ -21,6 +21,7 @@ class IcoMod_Sprichwuerfel : public IcoMod
     StaticJsonDocument<24576> _jsonBuffer;
     unsigned long _lastRefresh;
     unsigned long _lastFetch;
+    unsigned long _fontSize;
     unsigned long _refreshTime;
 };
 

@@ -19,10 +19,11 @@ IcoMod_Sprichwuerfel::IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int co
   _colors = colors;
 
   _refreshTime = config["refreshTime"];
+  _fontSize = config["fontSize"];
   _currentIndex = 0;
 }
 
-void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex)
+void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex, unsigned int fontSize)
 {
 
   // zeige aktuelle posts
@@ -31,7 +32,7 @@ void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned
   // Print random funny text, data is an array of strings
   String currentFunny = data[currentIndex];
   // TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 5, 1, colors[1]);
-  TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 1, 2, colors[1]);
+  TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 1, _fontSize, colors[1]);
 }
 
 void IcoMod_Sprichwuerfel::onClick()
@@ -85,7 +86,7 @@ void IcoMod_Sprichwuerfel::refresh()
     Serial.println(_currentIndex);
 
     JsonArray data = _jsonBuffer.as<JsonArray>();
-    draw(_tft, _colors, data, _currentIndex);
+    draw(_tft, _colors, data, _currentIndex, _fontSize);
     _currentIndex += (_currentIndex + 1) % data.size();
   }
 }
