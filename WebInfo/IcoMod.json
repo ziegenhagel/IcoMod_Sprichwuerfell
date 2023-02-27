@@ -11,13 +11,13 @@
             "type": "number",
             "min": 0,
             "max": 86400000,
-            "default": 60000
+            "default": 8000
         },
         {
             "name": "fontSize",
             "type": "enum",
             "options": ["1","2"],
-            "default": "1"
+            "default": "2"
         },
         {
             "name": "progressBar",
