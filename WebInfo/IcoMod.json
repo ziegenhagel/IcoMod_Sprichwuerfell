@@ -1,21 +1,11 @@
 {
     "name": "Sprichwuerfel",
     "version": "1.0.0",
-    "description": "Show the current Sprichwuerfel.",
-    "author": "Till",
+    "description": "Zeige zwei zufällige Sprichwörter gemischt an",
+    "author": "Domi",
     "license": "MIT",
     "config": 
     [
-        {
-            "name": "city",
-            "type": "text",
-            "default": "dresden"
-        },
-        {
-            "name": "privateKey",
-            "type": "text",
-            "default": "Get your key from https://openweathermap.org/"
-        },
         {
             "name": "refreshTime",
             "type": "number",

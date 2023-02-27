@@ -18,130 +18,24 @@ IcoMod_Sprichwuerfel::IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int co
   _tft = tft;
   _colors = colors;
 
-  _city = config["city"];
-  _privateKey = config["privateKey"];
   _refreshTime = config["refreshTime"];
-
-  _showCurrentWeather = true;
+  _currentIndex = 0;
 }
 
-void drawCurrentWeather(Adafruit_ST7735* tft, unsigned int colors[], JsonObject &weatherData)
+void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonObject &data)
 {
 
   // zeige aktuelle posts
   tft->fillScreen(colors[0]);
 
-  // String currentText 
-
-  // Print degree symbol
-  tft->setTextSize(2);
-  tft->setCursor(tft->getCursorX(), tft->getCursorY() - 2 * 5);
-  tft->print("o");
-
-  // Print random funny text, weatherDate is an array of strings
+  // Print random funny text, data is an array of strings
   String currentFunny = "hi";
   TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 5, 1, colors[1]);
 }
 
-String getWeekDay(int day)
-{
-  return "hi";
-}
-
-void drawWeatherForecast(Adafruit_ST7735* tft, unsigned int colors[], JsonObject &weatherData)
-{
-  tft->fillScreen(colors[0]);
-  tft->setTextSize(2);
-
-  JsonArray forecastsArray = weatherData["list"];
-
-  int j = 0;
-  for (int i = 0; i < forecastsArray.size(); i++)
-  {
-    long dt = (long)forecastsArray[i]["dt"];
-    if (dt % 43200 == 0 && dt % 86400 != 0) 
-    {
-      j++;
-
-      tft->setTextSize(2);
-
-      int height = tft->height() / 6 * (j) - 8;
-      tft->setCursor(10, height);
-
-      // Print day
-      tft->print(getWeekDay((int)(floor(dt / 86400) + 4) % 7));
-
-      // Draw icon
-      String iconString = forecastsArray[i]["weather"][0]["icon"];
-      int spacing = 12;
-      if (iconString == "01d")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _01d_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "01n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _01n_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "02d")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _02d_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "02n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _02n_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "03d" || iconString == "03n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _03dn_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "04d" || iconString == "04n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _04dn_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "09d" || iconString == "09n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _09dn_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "10d")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _10d_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "10n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _10n_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "11d" || iconString == "11n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _11dn_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "13d" || iconString == "13n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _13dn_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "50d")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _50d_16x16, 16, 16, colors[1]);
-      }
-      else if (iconString == "50n")
-      {
-        tft->drawXBitmap(tft->getCursorX() + spacing, height, _50n_16x16, 16, 16, colors[1]);
-      }
-
-      // Print temp
-      String temp = String((int)round((double)forecastsArray[i]["main"]["temp"]));
-      TextUtils::printRightAligned(tft, temp, 10 + 8, height, 2, colors[1]);
-
-      // Print degree symbol
-      tft->setTextSize(1);
-      tft->setCursor(tft->getCursorX(), tft->getCursorY() - 5); // 5 -> 5 * (text size from °)
-      tft->print("o");
-    }
-  }
-}
-
 void IcoMod_Sprichwuerfel::onClick()
 {
-  _showCurrentWeather = !_showCurrentWeather;
+  _currentIndex = (_currentIndex + 1); // % _jsonBuffer["data"].size();
   _lastRefresh = millis();
 }
 
