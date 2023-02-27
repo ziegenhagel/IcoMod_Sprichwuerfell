@@ -16,6 +16,7 @@ class IcoMod_Sprichwuerfel : public IcoMod
     void onClick();
     void initialize();
     void refresh();
+    void next();
   private:
     int _currentIndex;
     StaticJsonDocument<24576> _jsonBuffer;

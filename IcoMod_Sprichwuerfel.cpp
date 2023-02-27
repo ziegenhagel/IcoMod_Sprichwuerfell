@@ -41,16 +41,8 @@ void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned
 
 void IcoMod_Sprichwuerfel::onClick()
 {
-  JsonArray data = _jsonBuffer.as<JsonArray>();
-
-  _currentIndex += 1;
-  if(_currentIndex >= data.size()) {
-    _currentIndex = 0;
-  }
-
-  Serial.print("Click at ");
-  Serial.print(millis()); 
-
+  next();
+ 
   _nextRefresh = millis() - 1;
 }
 
@@ -58,6 +50,24 @@ void IcoMod_Sprichwuerfel::initialize()
 {
   _nextRefresh = millis() - 1;
   _lastFetch = millis() - 1;
+}
+
+void IcoMod_Sprichwuerfel::next() {
+
+  JsonArray data = _jsonBuffer.as<JsonArray>();
+
+  _currentIndex += 1;
+  if(_currentIndex >= data.size()) {
+    _currentIndex = 0;
+  }
+
+  // if 40 or more long, call next again
+  String currentFunny = data[_currentIndex];
+  if(currentFunny.length() >= 40 && _fontSize == 2) {
+    Serial.println("Long text, calling next again");
+    next();
+  }
+
 }
 
 void IcoMod_Sprichwuerfel::refresh()
@@ -94,12 +104,9 @@ void IcoMod_Sprichwuerfel::refresh()
 
     _nextRefresh = millis() + _refreshTime;
 
-    JsonArray data = _jsonBuffer.as<JsonArray>();
+    next();
 
-    _currentIndex += 1;
-    if(_currentIndex >= data.size()) {
-      _currentIndex = 0;
-    }
+    JsonArray data = _jsonBuffer.as<JsonArray>();
 
     draw(_tft, _colors, data, _currentIndex, _fontSize);
   }
