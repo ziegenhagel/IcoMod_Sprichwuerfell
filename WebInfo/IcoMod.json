@@ -12,6 +12,12 @@
             "min": 0,
             "max": 86400000,
             "default": 60000
+        },
+        {
+            "name": "fontSize",
+            "type": "enum",
+            "values": ["1","2"],
+            "default": "1"
         }
     ]
 }

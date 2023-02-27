@@ -20,6 +20,7 @@ class IcoMod_Sprichwuerfel : public IcoMod
     int _currentIndex;
     StaticJsonDocument<24576> _jsonBuffer;
     unsigned long _lastRefresh;
+    unsigned long _lastFetch;
     unsigned long _refreshTime;
 };
 

@@ -30,29 +30,31 @@ void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned
 
   // Print random funny text, data is an array of strings
   String currentFunny = data[currentIndex];
-  TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 5, 1, colors[1]);
+  // TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 5, 1, colors[1]);
+  TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 1, 2, colors[1]);
 }
 
 void IcoMod_Sprichwuerfel::onClick()
 {
-  _currentIndex = (_currentIndex + 1); // % _jsonBuffer["data"].size();
+  JsonArray data = _jsonBuffer.as<JsonArray>();
+  _currentIndex += (_currentIndex + 1) % data.size();
   _lastRefresh = millis();
 }
 
 void IcoMod_Sprichwuerfel::initialize()
 {
-  _lastRefresh = millis();
+  _lastRefresh = millis() - 1;
+  _lastFetch = millis() - 1;
 }
 
 void IcoMod_Sprichwuerfel::refresh()
 {
-  static String url = "";
 
-  if (millis() >= _lastRefresh)
+  if (millis() >= _lastFetch)
   {
-    _lastRefresh += _refreshTime;
+    _lastFetch = millis() + 120 * 1000;
 
-    url = "https://sprichwrfel.najajan.de/api/funny";
+    String url = "http://sprichwrfel.najajan.de/api/funny";
 
     if (WiFi.status() != WL_CONNECTED)
     {
@@ -72,7 +74,18 @@ void IcoMod_Sprichwuerfel::refresh()
     }
 
     JsonArray data = _jsonBuffer.as<JsonArray>();
+  }
 
+  if (millis() >= _lastRefresh)
+  {
+
+    _lastRefresh += millis() + _refreshTime;
+
+    Serial.print("Changing Sprichwuerfel to index: ");
+    Serial.println(_currentIndex);
+
+    JsonArray data = _jsonBuffer.as<JsonArray>();
     draw(_tft, _colors, data, _currentIndex);
+    _currentIndex += (_currentIndex + 1) % data.size();
   }
 }
