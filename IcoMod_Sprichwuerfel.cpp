@@ -55,11 +55,11 @@ void IcoMod_Sprichwuerfel::refresh()
   {
     _lastFetch = millis() + 120 * 1000;
 
-    String url = "http://sprichwrfel.najajan.de/api/funny";
+    String url =  "http://10.10.10.125:3000/api/funny"; //"http://sprichwrfel.najajan.de/api/funny";
 
     if (WiFi.status() != WL_CONNECTED)
     {
-      Serial.println("Can't fetch data. WiFi Disconnected...");
+      Serial.println("Can't fetch me.");
       return;
     }
 
