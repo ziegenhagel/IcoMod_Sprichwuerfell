@@ -20,6 +20,7 @@ IcoMod_Sprichwuerfel::IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int co
 
   _refreshTime = config["refreshTime"];
   _fontSize = config["fontSize"];
+  _progressBar = config["progressBar"];
   _currentIndex = 0;
 }
 
@@ -99,5 +100,19 @@ void IcoMod_Sprichwuerfel::refresh()
 
     draw(_tft, _colors, data, _currentIndex, _fontSize);
   }
+
+  // progress button on bottom 
+  int progress = (_lastRefresh - millis()) / _refreshTime ;
+
+  Serial.print("Progress: ");
+  Serial.println(progress);
+  Serial.print("%");
+
+  int progressWidth = progress / _tft->width();
+
+  // progressWidth = 40;
+
+  // _tft->fillRect(0, 0, progressWidth, 5, _colors[2]);
+  _tft->fillRect(0, _tft->height() - 5, progressWidth, 5, _colors[2]);
 
 }

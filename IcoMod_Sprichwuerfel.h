@@ -23,6 +23,7 @@ class IcoMod_Sprichwuerfel : public IcoMod
     unsigned long _lastFetch;
     unsigned long _fontSize;
     unsigned long _refreshTime;
+    String _progressBar;
 };
 
 #endif
