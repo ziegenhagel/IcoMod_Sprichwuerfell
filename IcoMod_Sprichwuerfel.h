@@ -12,7 +12,7 @@
 class IcoMod_Sprichwuerfel : public IcoMod
 {
   public:
-    IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &config);
+    IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int colors[], JsonObject &config);
     void onClick();
     void initialize();
     void refresh();

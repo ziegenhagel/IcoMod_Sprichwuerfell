@@ -22,14 +22,14 @@ IcoMod_Sprichwuerfel::IcoMod_Sprichwuerfel(Adafruit_ST7735* tft, unsigned int co
   _currentIndex = 0;
 }
 
-void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonObject &data)
+void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned int currentIndex)
 {
 
   // zeige aktuelle posts
   tft->fillScreen(colors[0]);
 
   // Print random funny text, data is an array of strings
-  String currentFunny = "hi";
+  String currentFunny = data[currentIndex];
   TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 5, 1, colors[1]);
 }
 
@@ -52,9 +52,7 @@ void IcoMod_Sprichwuerfel::refresh()
   {
     _lastRefresh += _refreshTime;
 
-    url = _showCurrentWeather ? "http://api.openweathermap.org/data/2.5/weather?q=" : "http://api.openweathermap.org/data/2.5/forecast?q=";
-    url += String(_city) + "&units=metric" + "&appid=" + String(_privateKey);
-    url = "https://sprichwrfl.najajan.de/api/funny";
+    url = "https://sprichwrfel.najajan.de/api/funny";
 
     if (WiFi.status() != WL_CONNECTED)
     {
@@ -62,19 +60,19 @@ void IcoMod_Sprichwuerfel::refresh()
       return;
     }
 
-    // Serial.print("URL: ");
-    // Serial.println(url);
+    Serial.print("URL: ");
+    Serial.println(url);
 
     ApiUtils::getJsonFromServer(&_jsonBuffer, url.c_str());
 
     if (_jsonBuffer.isNull())
     {
-      Serial.println("Parsing weather data failed!");
+      Serial.println("Parsing sprichwuerfel data failed!");
       return;
     }
 
-    JsonObject weatherData = _jsonBuffer.as<JsonObject>();
+    JsonArray data = _jsonBuffer.as<JsonArray>();
 
-    drawCurrentWeather(_tft, _colors, weatherData);
+    draw(_tft, _colors, data, _currentIndex);
   }
 }
