@@ -32,14 +32,22 @@ void draw(Adafruit_ST7735* tft, unsigned int colors[], JsonArray &data, unsigned
   // Print random funny text, data is an array of strings
   String currentFunny = data[currentIndex];
   // TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 5, 1, colors[1]);
-  TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 1, _fontSize, colors[1]);
+  TextUtils::printLinesCentered(tft, currentFunny, 20, 2, tft->height() / 6 * 1, fontSize, colors[1]);
 }
 
 void IcoMod_Sprichwuerfel::onClick()
 {
   JsonArray data = _jsonBuffer.as<JsonArray>();
-  _currentIndex += (_currentIndex + 1) % data.size();
-  _lastRefresh = millis();
+
+  _currentIndex += 1;
+  if(_currentIndex >= data.size()) {
+    _currentIndex = 0;
+  }
+
+  Serial.print("Click at ");
+  Serial.print(millis()); 
+
+  _lastRefresh = millis() - 1;
 }
 
 void IcoMod_Sprichwuerfel::initialize()
@@ -53,9 +61,9 @@ void IcoMod_Sprichwuerfel::refresh()
 
   if (millis() >= _lastFetch)
   {
-    _lastFetch = millis() + 120 * 1000;
+    _lastFetch = millis() + 30 * 1000;
 
-    String url =  "http://10.10.10.125:3000/api/funny"; //"http://sprichwrfel.najajan.de/api/funny";
+    String url =  "http://sprichwrfel.najajan.de/api/funny";
 
     if (WiFi.status() != WL_CONNECTED)
     {
@@ -63,8 +71,8 @@ void IcoMod_Sprichwuerfel::refresh()
       return;
     }
 
-    Serial.print("URL: ");
-    Serial.println(url);
+    Serial.print("URL at ");
+    Serial.print(millis());
 
     ApiUtils::getJsonFromServer(&_jsonBuffer, url.c_str());
 
@@ -80,13 +88,16 @@ void IcoMod_Sprichwuerfel::refresh()
   if (millis() >= _lastRefresh)
   {
 
-    _lastRefresh += millis() + _refreshTime;
-
-    Serial.print("Changing Sprichwuerfel to index: ");
-    Serial.println(_currentIndex);
+    _lastRefresh = millis() + _refreshTime;
 
     JsonArray data = _jsonBuffer.as<JsonArray>();
+
+    _currentIndex += 1;
+    if(_currentIndex >= data.size()) {
+      _currentIndex = 0;
+    }
+
     draw(_tft, _colors, data, _currentIndex, _fontSize);
-    _currentIndex += (_currentIndex + 1) % data.size();
   }
+
 }
